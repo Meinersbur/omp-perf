@@ -6,7 +6,7 @@ target_compile_options(su3 PUBLIC -fno-exceptions)
 # Assume everything else is based on clang (e.g. Cray)
 set(OFFLOAD_OPTIONS ${OpenMP_CXX_FLAGS} --cuda-path=/opt/cuda -fopenmp=libomp -fopenmp-version=51 -fopenmp-targets=nvptx64 "--libomptarget-nvptx-bc-path=/home/meinersbur/build/llvm-project/release/projects/openmp/libomptarget" -Wall -save-temps
     -fno-unroll-loops -Rpass=loop-unroll    -Rpass-missed=loop-unroll    -Rpass-analysis=loop-unroll    #"SHELL:-mllvm -debug-only=loop-unroll"
-   # -fno-vectorize
+    -fno-vectorize
    #   -Rpass=loop-vectorize -Rpass-missed=loop-vectorize -Rpass-analysis=loop-vectorize
 )
 

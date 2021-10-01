@@ -254,3 +254,169 @@ static void bench_su3_host_full(benchmark::State& state) {
 BENCHMARK(bench_su3_host_full)->Unit(benchmark::kMicrosecond);
 
 
+
+
+
+
+
+static
+void kernel_su3_target(int n,
+    su3_vector C[N],
+    su3_vector A[N],
+    su3_matrix B[N])
+{
+  #pragma omp target teams distribute parallel for
+  for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < 3; ++j)
+        for (int k = 0; k < 3; ++k)
+           C[i].v[j] += A[i].v[k] * B[i].v[k].v[j];
+  }
+}
+static void bench_su3_target(benchmark::State& state) {
+  int n = N;
+
+  su3_vector *C = (su3_vector*)xmalloc(n * sizeof(*C));
+  su3_vector *A = (su3_vector*)xmalloc(n * sizeof(*A));
+  su3_matrix *B = (su3_matrix*)xmalloc(n * sizeof(*B));
+
+  memset(C, '\0', n * sizeof(*C));
+  memset(A, '\0', n * sizeof(*A));
+  memset(B, '\0', n * sizeof(*B));
+
+
+  #pragma omp target data map(to:A[0:N]) map(to:B[0:N]) map(from:C[0:N])
+  for (auto _ : state) {
+    kernel_su3_target(n, C, A, B);
+    benchmark::ClobberMemory();
+  }
+
+  free(C);
+  free(A);
+  free(B);
+}
+BENCHMARK(bench_su3_target)->Unit(benchmark::kMicrosecond);
+
+
+static
+void kernel_su3_target_inner(int n,
+    su3_vector C[N],
+    su3_vector A[N],
+    su3_matrix B[N])
+{
+  #pragma omp target teams distribute parallel for
+  for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < 3; ++j)
+      #pragma omp unroll full
+        for (int k = 0; k < 3; ++k)
+           C[i].v[j] += A[i].v[k] * B[i].v[k].v[j];
+  }
+}
+static void bench_su3_target_inner(benchmark::State& state) {
+  int n = N;
+
+  su3_vector *C = (su3_vector*)xmalloc(n * sizeof(*C));
+  su3_vector *A = (su3_vector*)xmalloc(n * sizeof(*A));
+  su3_matrix *B = (su3_matrix*)xmalloc(n * sizeof(*B));
+
+  memset(C, '\0', n * sizeof(*C));
+  memset(A, '\0', n * sizeof(*A));
+  memset(B, '\0', n * sizeof(*B));
+
+
+  #pragma omp target data map(to:A[0:N]) map(to:B[0:N]) map(from:C[0:N])
+  for (auto _ : state) {
+    kernel_su3_target_inner(n, C, A, B);
+    benchmark::ClobberMemory();
+  }
+
+  free(C);
+  free(A);
+  free(B);
+}
+BENCHMARK(bench_su3_target_inner)->Unit(benchmark::kMicrosecond);
+
+
+
+
+static
+void kernel_su3_target_outer(int n,
+    su3_vector C[N],
+    su3_vector A[N],
+    su3_matrix B[N])
+{
+  #pragma omp target teams distribute parallel for
+  for (int i = 0; i < n; ++i) {
+          #pragma omp unroll full
+      for (int j = 0; j < 3; ++j)
+        for (int k = 0; k < 3; ++k)
+           C[i].v[j] += A[i].v[k] * B[i].v[k].v[j];
+  }
+}
+static void bench_su3_target_outer(benchmark::State& state) {
+  int n = N;
+
+  su3_vector *C = (su3_vector*)xmalloc(n * sizeof(*C));
+  su3_vector *A = (su3_vector*)xmalloc(n * sizeof(*A));
+  su3_matrix *B = (su3_matrix*)xmalloc(n * sizeof(*B));
+
+  memset(C, '\0', n * sizeof(*C));
+  memset(A, '\0', n * sizeof(*A));
+  memset(B, '\0', n * sizeof(*B));
+
+
+  #pragma omp target data map(to:A[0:N]) map(to:B[0:N]) map(from:C[0:N])
+  for (auto _ : state) {
+    kernel_su3_target_outer(n, C, A, B);
+    benchmark::ClobberMemory();
+  }
+
+  free(C);
+  free(A);
+  free(B);
+}
+BENCHMARK(bench_su3_target_outer)->Unit(benchmark::kMicrosecond);
+
+
+
+
+
+
+
+static
+void kernel_su3_target_full(int n,
+    su3_vector C[N],
+    su3_vector A[N],
+    su3_matrix B[N])
+{
+  #pragma omp target teams distribute parallel for
+  for (int i = 0; i < n; ++i) {
+          #pragma omp unroll full
+      for (int j = 0; j < 3; ++j)
+         #pragma omp unroll full
+        for (int k = 0; k < 3; ++k)
+           C[i].v[j] += A[i].v[k] * B[i].v[k].v[j];
+  }
+}
+static void bench_su3_target_full(benchmark::State& state) {
+  int n = N;
+
+  su3_vector *C = (su3_vector*)xmalloc(n * sizeof(*C));
+  su3_vector *A = (su3_vector*)xmalloc(n * sizeof(*A));
+  su3_matrix *B = (su3_matrix*)xmalloc(n * sizeof(*B));
+
+  memset(C, '\0', n * sizeof(*C));
+  memset(A, '\0', n * sizeof(*A));
+  memset(B, '\0', n * sizeof(*B));
+
+
+  #pragma omp target data map(to:A[0:N]) map(to:B[0:N]) map(from:C[0:N])
+  for (auto _ : state) {
+    kernel_su3_target_full(n, C, A, B);
+    benchmark::ClobberMemory();
+  }
+
+  free(C);
+  free(A);
+  free(B);
+}
+BENCHMARK(bench_su3_target_full)->Unit(benchmark::kMicrosecond);
