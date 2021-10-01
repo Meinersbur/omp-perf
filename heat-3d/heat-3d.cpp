@@ -1,4 +1,8 @@
-#define MEDIUM_DATASET
+
+//#define MEDIUM_DATASET
+#define TSTEPS 6
+#define N 400
+
 #include <benchmark/benchmark.h>
 /* polybench.c: this file is part of PolyBench/C */
 
@@ -956,46 +960,6 @@ void kernel_heat_3d(int tsteps,
     }
 }
 
-template<int P>
-static 
-//__attribute__((noinline))
-void kernel_heat_3d_threads(int tsteps,
-		      int n,
-		      DATA_TYPE POLYBENCH_3D(A,N,N,N,n,n,n),
-		      DATA_TYPE POLYBENCH_3D(B,N,N,N,n,n,n))
-{
-
-   #pragma omp parallel
-{
-    for (int t = 1; t <= TSTEPS; t++) {
-      #pragma omp for schedule(static)
-        #pragma omp tile sizes(P, P, P)
-        for (int i = 1; i < _PB_N-1; i++) {
-            for (int j = 1; j < _PB_N-1; j++) {
-                for (int k = 1; k < _PB_N-1; k++) {
-                    B[i][j][k] =   SCALAR_VAL(0.125) * (A[i+1][j][k] - SCALAR_VAL(2.0) * A[i][j][k] + A[i-1][j][k])
-                                 + SCALAR_VAL(0.125) * (A[i][j+1][k] - SCALAR_VAL(2.0) * A[i][j][k] + A[i][j-1][k])
-                                 + SCALAR_VAL(0.125) * (A[i][j][k+1] - SCALAR_VAL(2.0) * A[i][j][k] + A[i][j][k-1])
-                                 + A[i][j][k];
-                }
-            }
-        }
-
-      #pragma omp for schedule(static)
-        #pragma omp tile sizes(P, P, P)
-        for (int i = 1; i < _PB_N-1; i++) {
-           for (int j = 1; j < _PB_N-1; j++) {
-               for (int k = 1; k < _PB_N-1; k++) {
-                   A[i][j][k] =   SCALAR_VAL(0.125) * (B[i+1][j][k] - SCALAR_VAL(2.0) * B[i][j][k] + B[i-1][j][k])
-                                + SCALAR_VAL(0.125) * (B[i][j+1][k] - SCALAR_VAL(2.0) * B[i][j][k] + B[i][j-1][k])
-                                + SCALAR_VAL(0.125) * (B[i][j][k+1] - SCALAR_VAL(2.0) * B[i][j][k] + B[i][j][k-1])
-                                + B[i][j][k];
-               }
-           }
-       }
-    }
-}
-}
 
 
 
@@ -1019,10 +983,9 @@ static void benchmark_head3d_host(benchmark::State& state) {
   polybench_start_instruments;
 
   /* Run kernel. */
-
     for (auto _ : state) {
     /* Run kernel. */
-      kernel_heat_3d<P> (tsteps, n, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(B));
+      kernel_heat_3d<P>(tsteps, n, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(B));
 
     benchmark::ClobberMemory();
     }
@@ -1042,20 +1005,549 @@ static void benchmark_head3d_host(benchmark::State& state) {
 }
 
 
-#if 1
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 1)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 2)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 3)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 4)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 5)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 6)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 7)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 8)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 16)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 32)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 64)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 128)->Unit(benchmark::kMicrosecond);
-//BENCHMARK_TEMPLATE(benchmark_head3d_host, 256)->Unit(benchmark::kMicrosecond);
+
+#if 0
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 1)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 2)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 2)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 3)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 4)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 5)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 6)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 7)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 8)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 16)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 32)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 64)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 128)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 256)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 2)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
 #endif
+
+
+
+
+template<int P>
+static
+//__attribute__((noinline))
+void kernel_heat_3d_threads(int tsteps,
+		      int n,
+		      DATA_TYPE POLYBENCH_3D(A,N,N,N,n,n,n),
+		      DATA_TYPE POLYBENCH_3D(B,N,N,N,n,n,n))
+{
+
+#pragma omp parallel
+{
+   for (int t = 1; t <= TSTEPS; t++) {
+      #pragma omp for schedule(static,1) collapse(3)
+      #pragma omp tile sizes(P, P, 8)
+      for (int i = 1; i < _PB_N-1; i++) {
+        for (int j = 1; j < _PB_N-1; j++) {
+            for (int k = 1; k < _PB_N-1; k++) {
+                //  printf(  "tid=%d, t=%d, i=%d, j=%d, k=%d\n", omp_get_thread_num(),t,i,j,k );
+                    B[i][j][k] =   SCALAR_VAL(0.125) * (A[i+1][j][k] - SCALAR_VAL(2.0) * A[i][j][k] + A[i-1][j][k])
+                                 + SCALAR_VAL(0.125) * (A[i][j+1][k] - SCALAR_VAL(2.0) * A[i][j][k] + A[i][j-1][k])
+                                 + SCALAR_VAL(0.125) * (A[i][j][k+1] - SCALAR_VAL(2.0) * A[i][j][k] + A[i][j][k-1])
+                                 + A[i][j][k];
+                }
+            }
+        }
+
+
+      #pragma omp for schedule(static,1) collapse(3)
+        #pragma omp tile sizes(P, P, 8)
+        for (int i = 1; i < _PB_N-1; i++) {
+           for (int j = 1; j < _PB_N-1; j++) {
+               for (int k = 1; k < _PB_N-1; k++) {
+                   A[i][j][k] =   SCALAR_VAL(0.125) * (B[i+1][j][k] - SCALAR_VAL(2.0) * B[i][j][k] + B[i-1][j][k])
+                                + SCALAR_VAL(0.125) * (B[i][j+1][k] - SCALAR_VAL(2.0) * B[i][j][k] + B[i][j-1][k])
+                                + SCALAR_VAL(0.125) * (B[i][j][k+1] - SCALAR_VAL(2.0) * B[i][j][k] + B[i][j][k-1])
+                                + B[i][j][k];
+               }
+           }
+       }
+    }
+}
+
+}
+
+
+
+template <int P>
+static void benchmark_head3d_threads(benchmark::State& state) {
+
+  /* Retrieve problem size. */
+  int n = N;
+  int tsteps = TSTEPS;
+
+  /* Variable declaration/allocation. */
+  POLYBENCH_3D_ARRAY_DECL(A, DATA_TYPE, N, N, N, n, n, n);
+  POLYBENCH_3D_ARRAY_DECL(B, DATA_TYPE, N, N, N, n, n, n);
+
+
+  /* Initialize array(s). */
+  init_array (n, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(B));
+
+  /* Start timer. */
+  polybench_start_instruments;
+
+  /* Run kernel. */
+
+    for (auto _ : state) {
+    /* Run kernel. */
+      kernel_heat_3d_threads<P> (tsteps, n, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(B));
+
+    benchmark::ClobberMemory();
+    }
+
+
+  /* Stop and print timer. */
+  polybench_stop_instruments;
+  polybench_print_instruments;
+
+  /* Prevent dead-code elimination. All live-out data must be printed
+     by the function call in argument. */
+//  polybench_prevent_dce(print_array(n, POLYBENCH_ARRAY(A)));
+
+  /* Be clean. */
+  POLYBENCH_FREE_ARRAY(A);
+  POLYBENCH_FREE_ARRAY(B);
+}
+
+
+
+
+
+#if 0
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 1)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 2)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 3)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 4)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 5)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 6)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 7)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 8)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 16)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 32)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 64)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 128)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 256)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 512)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 2)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+#endif
+
+
+
+
+
+
+template<int P>
+static
+//__attribute__((noinline))
+void kernel_heat_3d_threads_chunks(int tsteps,
+		      int n,
+		      DATA_TYPE POLYBENCH_3D(A,N,N,N,n,n,n),
+		      DATA_TYPE POLYBENCH_3D(B,N,N,N,n,n,n))
+{
+
+#pragma omp parallel
+{
+    for (int t = 1; t <= TSTEPS; t++) {
+      #pragma omp for schedule(static,P*P*8) collapse(3)
+        for (int i = 1; i < _PB_N-1; i++) {
+            for (int j = 1; j < _PB_N-1; j++) {
+                for (int k = 1; k < _PB_N-1; k++) {
+                    B[i][j][k] =   SCALAR_VAL(0.125) * (A[i+1][j][k] - SCALAR_VAL(2.0) * A[i][j][k] + A[i-1][j][k])
+                                 + SCALAR_VAL(0.125) * (A[i][j+1][k] - SCALAR_VAL(2.0) * A[i][j][k] + A[i][j-1][k])
+                                 + SCALAR_VAL(0.125) * (A[i][j][k+1] - SCALAR_VAL(2.0) * A[i][j][k] + A[i][j][k-1])
+                                 + A[i][j][k];
+                }
+            }
+        }
+
+      #pragma omp for schedule(static,P*P*8) collapse(3)
+        for (int i = 1; i < _PB_N-1; i++) {
+           for (int j = 1; j < _PB_N-1; j++) {
+               for (int k = 1; k < _PB_N-1; k++) {
+                   A[i][j][k] =   SCALAR_VAL(0.125) * (B[i+1][j][k] - SCALAR_VAL(2.0) * B[i][j][k] + B[i-1][j][k])
+                                + SCALAR_VAL(0.125) * (B[i][j+1][k] - SCALAR_VAL(2.0) * B[i][j][k] + B[i][j-1][k])
+                                + SCALAR_VAL(0.125) * (B[i][j][k+1] - SCALAR_VAL(2.0) * B[i][j][k] + B[i][j][k-1])
+                                + B[i][j][k];
+               }
+           }
+       }
+    }
+}
+
+}
+
+
+
+
+template <int P>
+static void benchmark_head3d_threads_chunks(benchmark::State& state) {
+
+  /* Retrieve problem size. */
+  int n = N;
+  int tsteps = TSTEPS;
+
+  /* Variable declaration/allocation. */
+  POLYBENCH_3D_ARRAY_DECL(A, DATA_TYPE, N, N, N, n, n, n);
+  POLYBENCH_3D_ARRAY_DECL(B, DATA_TYPE, N, N, N, n, n, n);
+
+
+  /* Initialize array(s). */
+  init_array (n, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(B));
+
+  /* Start timer. */
+  polybench_start_instruments;
+
+  /* Run kernel. */
+
+    for (auto _ : state) {
+    /* Run kernel. */
+      kernel_heat_3d_threads_chunks<P>(tsteps, n, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(B));
+
+    benchmark::ClobberMemory();
+    }
+
+
+  /* Stop and print timer. */
+  polybench_stop_instruments;
+  polybench_print_instruments;
+
+  /* Prevent dead-code elimination. All live-out data must be printed
+     by the function call in argument. */
+//  polybench_prevent_dce(print_array(n, POLYBENCH_ARRAY(A)));
+
+  /* Be clean. */
+  POLYBENCH_FREE_ARRAY(A);
+  POLYBENCH_FREE_ARRAY(B);
+}
+
+
+#if 0
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 1)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 2)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 3)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 4)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 5)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 6)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 7)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 8)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 16)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 32)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 64)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 128)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 256)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 512)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 2)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+#endif
+
+
+
+
+
+
+static
+//__attribute__((noinline))
+void kernel_heat_3d_threads_static(int tsteps,
+		      int n,
+		      DATA_TYPE POLYBENCH_3D(A,N,N,N,n,n,n),
+		      DATA_TYPE POLYBENCH_3D(B,N,N,N,n,n,n))
+{
+
+#pragma omp parallel
+{
+    for (int t = 1; t <= TSTEPS; t++) {
+      #pragma omp for collapse(3) schedule(static)
+        for (int i = 1; i < _PB_N-1; i++) {
+            for (int j = 1; j < _PB_N-1; j++) {
+                for (int k = 1; k < _PB_N-1; k++) {
+                    B[i][j][k] =   SCALAR_VAL(0.125) * (A[i+1][j][k] - SCALAR_VAL(2.0) * A[i][j][k] + A[i-1][j][k])
+                                 + SCALAR_VAL(0.125) * (A[i][j+1][k] - SCALAR_VAL(2.0) * A[i][j][k] + A[i][j-1][k])
+                                 + SCALAR_VAL(0.125) * (A[i][j][k+1] - SCALAR_VAL(2.0) * A[i][j][k] + A[i][j][k-1])
+                                 + A[i][j][k];
+                }
+            }
+        }
+
+      #pragma omp for collapse(3) schedule(static)
+        for (int i = 1; i < _PB_N-1; i++) {
+           for (int j = 1; j < _PB_N-1; j++) {
+               for (int k = 1; k < _PB_N-1; k++) {
+                   A[i][j][k] =   SCALAR_VAL(0.125) * (B[i+1][j][k] - SCALAR_VAL(2.0) * B[i][j][k] + B[i-1][j][k])
+                                + SCALAR_VAL(0.125) * (B[i][j+1][k] - SCALAR_VAL(2.0) * B[i][j][k] + B[i][j-1][k])
+                                + SCALAR_VAL(0.125) * (B[i][j][k+1] - SCALAR_VAL(2.0) * B[i][j][k] + B[i][j][k-1])
+                                + B[i][j][k];
+               }
+           }
+       }
+    }
+}
+
+}
+
+
+
+
+
+static void benchmark_head3d_threads_static(benchmark::State& state) {
+
+  /* Retrieve problem size. */
+  int n = N;
+  int tsteps = TSTEPS;
+
+  /* Variable declaration/allocation. */
+  POLYBENCH_3D_ARRAY_DECL(A, DATA_TYPE, N, N, N, n, n, n);
+  POLYBENCH_3D_ARRAY_DECL(B, DATA_TYPE, N, N, N, n, n, n);
+
+
+  /* Initialize array(s). */
+  init_array (n, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(B));
+
+  /* Start timer. */
+  polybench_start_instruments;
+
+  /* Run kernel. */
+  for (auto _ : state) {
+    kernel_heat_3d_threads_static(tsteps, n, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(B));
+    benchmark::ClobberMemory();
+  }
+
+
+  /* Stop and print timer. */
+  polybench_stop_instruments;
+  polybench_print_instruments;
+
+  /* Prevent dead-code elimination. All live-out data must be printed
+     by the function call in argument. */
+//  polybench_prevent_dce(print_array(n, POLYBENCH_ARRAY(A)));
+
+  /* Be clean. */
+  POLYBENCH_FREE_ARRAY(A);
+  POLYBENCH_FREE_ARRAY(B);
+}
+
+
+
+#if 0
+BENCHMARK(benchmark_head3d_threads_static)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+#endif
+
+
+
+static
+//__attribute__((noinline))
+void kernel_heat_3d_target_notile(int tsteps,
+		      int n,
+		      DATA_TYPE POLYBENCH_3D(A,N,N,N,n,n,n),
+		      DATA_TYPE POLYBENCH_3D(B,N,N,N,n,n,n))
+{
+
+   for (int t = 1; t <= TSTEPS; t++) {
+      #pragma omp target teams distribute parallel for collapse(3)
+      for (int i = 1; i < _PB_N-1; i++) {
+        for (int j = 1; j < _PB_N-1; j++) {
+            for (int k = 1; k < _PB_N-1; k++) {
+                //  printf(  "tid=%d, t=%d, i=%d, j=%d, k=%d\n", omp_get_thread_num(),t,i,j,k );
+                    B[i][j][k] =   SCALAR_VAL(0.125) * (A[i+1][j][k] - SCALAR_VAL(2.0) * A[i][j][k] + A[i-1][j][k])
+                                 + SCALAR_VAL(0.125) * (A[i][j+1][k] - SCALAR_VAL(2.0) * A[i][j][k] + A[i][j-1][k])
+                                 + SCALAR_VAL(0.125) * (A[i][j][k+1] - SCALAR_VAL(2.0) * A[i][j][k] + A[i][j][k-1])
+                                 + A[i][j][k];
+                }
+            }
+        }
+
+
+      #pragma omp target teams distribute parallel for collapse(3)
+        for (int i = 1; i < _PB_N-1; i++) {
+           for (int j = 1; j < _PB_N-1; j++) {
+               for (int k = 1; k < _PB_N-1; k++) {
+                   A[i][j][k] =   SCALAR_VAL(0.125) * (B[i+1][j][k] - SCALAR_VAL(2.0) * B[i][j][k] + B[i-1][j][k])
+                                + SCALAR_VAL(0.125) * (B[i][j+1][k] - SCALAR_VAL(2.0) * B[i][j][k] + B[i][j-1][k])
+                                + SCALAR_VAL(0.125) * (B[i][j][k+1] - SCALAR_VAL(2.0) * B[i][j][k] + B[i][j][k-1])
+                                + B[i][j][k];
+               }
+           }
+       }
+    }
+
+}
+
+
+
+static
+//__attribute__((noinline))
+void kernel_heat_3d_target_inner_notile(benchmark::State& state,int tsteps,
+		      int n,
+		      DATA_TYPE POLYBENCH_3D(A,N,N,N,n,n,n),
+		      DATA_TYPE POLYBENCH_3D(B,N,N,N,n,n,n))
+{
+  #pragma omp target data map(tofrom:A[0:N][0:N][0:N]) map(tofrom:B[0:N][0:N][0:N])
+  for (auto _ : state) {
+    kernel_heat_3d_target_notile(tsteps, n, A, B);
+    benchmark::ClobberMemory();
+  }
+}
+
+
+
+
+static void benchmark_head3d_target_notile(benchmark::State& state) {
+
+  /* Retrieve problem size. */
+  int n = N;
+  int tsteps = TSTEPS;
+
+  /* Variable declaration/allocation. */
+  POLYBENCH_3D_ARRAY_DECL(A, DATA_TYPE, N, N, N, n, n, n);
+  POLYBENCH_3D_ARRAY_DECL(B, DATA_TYPE, N, N, N, n, n, n);
+
+
+  /* Initialize array(s). */
+  init_array (n, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(B));
+
+  /* Start timer. */
+  polybench_start_instruments;
+
+  /* Run kernel. */
+kernel_heat_3d_target_inner_notile(state, tsteps, n, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(B));
+
+  /* Stop and print timer. */
+  polybench_stop_instruments;
+  polybench_print_instruments;
+
+  /* Prevent dead-code elimination. All live-out data must be printed
+     by the function call in argument. */
+//  polybench_prevent_dce(print_array(n, POLYBENCH_ARRAY(A)));
+
+  /* Be clean. */
+  POLYBENCH_FREE_ARRAY(A);
+  POLYBENCH_FREE_ARRAY(B);
+}
+
+
+BENCHMARK(benchmark_head3d_target_notile)->Unit(benchmark::kMillisecond)->UseRealTime();
+
+
+
+
+template<int P>
+static
+//__attribute__((noinline))
+void kernel_heat_3d_target(int tsteps,
+		      int n,
+		      DATA_TYPE POLYBENCH_3D(A,N,N,N,n,n,n),
+		      DATA_TYPE POLYBENCH_3D(B,N,N,N,n,n,n))
+{
+
+   for (int t = 1; t <= TSTEPS; t++) {
+      #pragma omp target teams distribute parallel for schedule(static) collapse(3)
+      #pragma omp tile sizes(P, P, 1)
+      for (int i = 1; i < _PB_N-1; i++) {
+        for (int j = 1; j < _PB_N-1; j++) {
+            for (int k = 1; k < _PB_N-1; k++) {
+                //  printf(  "tid=%d, t=%d, i=%d, j=%d, k=%d\n", omp_get_thread_num(),t,i,j,k );
+                    B[i][j][k] =   SCALAR_VAL(0.125) * (A[i+1][j][k] - SCALAR_VAL(2.0) * A[i][j][k] + A[i-1][j][k])
+                                 + SCALAR_VAL(0.125) * (A[i][j+1][k] - SCALAR_VAL(2.0) * A[i][j][k] + A[i][j-1][k])
+                                 + SCALAR_VAL(0.125) * (A[i][j][k+1] - SCALAR_VAL(2.0) * A[i][j][k] + A[i][j][k-1])
+                                 + A[i][j][k];
+                }
+            }
+        }
+
+
+      #pragma omp target teams distribute parallel for schedule(static) collapse(3)
+        #pragma omp tile sizes(P, P, 1)
+        for (int i = 1; i < _PB_N-1; i++) {
+           for (int j = 1; j < _PB_N-1; j++) {
+               for (int k = 1; k < _PB_N-1; k++) {
+                   A[i][j][k] =   SCALAR_VAL(0.125) * (B[i+1][j][k] - SCALAR_VAL(2.0) * B[i][j][k] + B[i-1][j][k])
+                                + SCALAR_VAL(0.125) * (B[i][j+1][k] - SCALAR_VAL(2.0) * B[i][j][k] + B[i][j-1][k])
+                                + SCALAR_VAL(0.125) * (B[i][j][k+1] - SCALAR_VAL(2.0) * B[i][j][k] + B[i][j][k-1])
+                                + B[i][j][k];
+               }
+           }
+       }
+    }
+
+}
+
+
+template<int P>
+static
+//__attribute__((noinline))
+void kernel_heat_3d_target_inner(benchmark::State& state,int tsteps,
+		      int n,
+		      DATA_TYPE POLYBENCH_3D(A,N,N,N,n,n,n),
+		      DATA_TYPE POLYBENCH_3D(B,N,N,N,n,n,n))
+{
+  #pragma omp target data map(tofrom:A[0:N][0:N][0:N]) map(tofrom:B[0:N][0:N][0:N])
+  for (auto _ : state) {
+    kernel_heat_3d_target<P>(tsteps, n, A, B);
+    benchmark::ClobberMemory();
+  }
+}
+
+
+
+template <int P>
+static void benchmark_head3d_target(benchmark::State& state) {
+
+  /* Retrieve problem size. */
+  int n = N;
+  int tsteps = TSTEPS;
+
+  /* Variable declaration/allocation. */
+  POLYBENCH_3D_ARRAY_DECL(A, DATA_TYPE, N, N, N, n, n, n);
+  POLYBENCH_3D_ARRAY_DECL(B, DATA_TYPE, N, N, N, n, n, n);
+
+
+  /* Initialize array(s). */
+  init_array (n, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(B));
+
+  /* Start timer. */
+  polybench_start_instruments;
+
+  /* Run kernel. */
+kernel_heat_3d_target_inner<P>(state, tsteps, n, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(B));
+
+
+  /* Stop and print timer. */
+  polybench_stop_instruments;
+  polybench_print_instruments;
+
+  /* Prevent dead-code elimination. All live-out data must be printed
+     by the function call in argument. */
+//  polybench_prevent_dce(print_array(n, POLYBENCH_ARRAY(A)));
+
+  /* Be clean. */
+  POLYBENCH_FREE_ARRAY(A);
+  POLYBENCH_FREE_ARRAY(B);
+}
+
+
+
+
+
+
+#if 1
+BENCHMARK_TEMPLATE(benchmark_head3d_target, 1)->Unit(benchmark::kMillisecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_target, 2)->Unit(benchmark::kMillisecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_target, 3)->Unit(benchmark::kMillisecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_target, 4)->Unit(benchmark::kMillisecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_target, 5)->Unit(benchmark::kMillisecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_target, 6)->Unit(benchmark::kMillisecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_target, 7)->Unit(benchmark::kMillisecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_target, 8)->Unit(benchmark::kMillisecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_target, 16)->Unit(benchmark::kMillisecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_target, 32)->Unit(benchmark::kMillisecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_target, 64)->Unit(benchmark::kMillisecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_target, 128)->Unit(benchmark::kMillisecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_target, 256)->Unit(benchmark::kMillisecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_target, 512)->Unit(benchmark::kMillisecond)->UseRealTime();
+#endif
+
 
 
