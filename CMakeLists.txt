@@ -25,13 +25,14 @@ FetchContent_MakeAvailable(googlebenchmark)
 
 add_subdirectory(atax-host-unroll)
 add_subdirectory(heat-3d)
+add_subdirectory(su3)
 
 
 ## Run #########################################################################
 
 set(GBENCH_ARGS)
 #if (GAMESS_REPETITIONS GREATER 1)
-#    list(APPEND GBENCH_ARGS --benchmark_repetitions=${GAMESS_REPETITIONS} --benchmark_display_aggregates_only=true)
+#    list(APPEND GBENCH_ARGS --benchmark_repetitions=${GAMESS_REPETITIONS} --benchmark_display_aggregates_only=true  --benchmark_min_time=20)
 #endif ()
 
 
@@ -39,8 +40,10 @@ set(GBENCH_ARGS)
 add_custom_target(run
     DEPENDS heat-3d atax-host-unroll
     #COMMAND $<TARGET_FILE:atax-host-unroll> ${GBENCH_ARGS}
-    COMMAND $<TARGET_FILE:heat-3d> ${GBENCH_ARGS} --benchmark_min_time=20
+    #COMMAND $<TARGET_FILE:heat-3d> ${GBENCH_ARGS}
+    COMMAND $<TARGET_FILE:su3> ${GBENCH_ARGS}
     USES_TERMINAL
     COMMENT "Run benchmark ..."
     VERBATIM
 )
+
