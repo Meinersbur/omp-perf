@@ -46,7 +46,7 @@ set(OFFLOAD_LD_OPTIONS ${OFFLOAD_OPTIONS}
 add_subdirectory(atax-host-unroll)
 add_subdirectory(heat-3d)
 add_subdirectory(su3)
-
+add_subdirectory(chunksize)
 
 ## Run #########################################################################
 
@@ -63,6 +63,7 @@ add_custom_target(run
     COMMAND $<TARGET_FILE:atax-host-unroll> ${GBENCH_ARGS}
     #COMMAND $<TARGET_FILE:heat-3d> ${GBENCH_ARGS}
     #COMMAND $<TARGET_FILE:su3> ${GBENCH_ARGS}
+    #COMMAND $<TARGET_FILE:chunksize> ${GBENCH_ARGS}
     USES_TERMINAL
     COMMENT "Run benchmark ..."
     VERBATIM
