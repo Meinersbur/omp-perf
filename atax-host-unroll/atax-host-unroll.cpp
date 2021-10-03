@@ -999,7 +999,7 @@ static void benchmark_atax_host(benchmark::State& state) {
 }
 
 
-#if 0
+#if 1
 BENCHMARK_TEMPLATE(benchmark_atax_host, 1)->Unit(benchmark::kMicrosecond);
 BENCHMARK_TEMPLATE(benchmark_atax_host, 2)->Unit(benchmark::kMicrosecond);
 BENCHMARK_TEMPLATE(benchmark_atax_host, 3)->Unit(benchmark::kMicrosecond);
@@ -1068,7 +1068,7 @@ static void benchmark_atax_target_inner(
           x,
           y,
           tmp);
-
+    #pragma omp taskwait
     benchmark::ClobberMemory();
     }
   }
@@ -1112,17 +1112,17 @@ benchmark_atax_target_inner<P>(m, n,
 }
 
 
-#if 0
-BENCHMARK_TEMPLATE(benchmark_atax_target, 1)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_atax_target, 2)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_atax_target, 3)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_atax_target, 4)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_atax_target, 8)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_atax_target, 16)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_atax_target, 32)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_atax_target, 64)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_atax_target, 128)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_atax_target, 256)->Unit(benchmark::kMicrosecond);
+#if 1
+BENCHMARK_TEMPLATE(benchmark_atax_target, 1)->Unit(benchmark::kMicrosecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_atax_target, 2)->Unit(benchmark::kMicrosecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_atax_target, 3)->Unit(benchmark::kMicrosecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_atax_target, 4)->Unit(benchmark::kMicrosecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_atax_target, 8)->Unit(benchmark::kMicrosecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_atax_target, 16)->Unit(benchmark::kMicrosecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_atax_target, 32)->Unit(benchmark::kMicrosecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_atax_target, 64)->Unit(benchmark::kMicrosecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_atax_target, 128)->Unit(benchmark::kMicrosecond)->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_atax_target, 256)->Unit(benchmark::kMicrosecond)->UseRealTime();
 #endif
 
 

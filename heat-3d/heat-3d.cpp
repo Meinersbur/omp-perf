@@ -925,7 +925,7 @@ void print_array(int n,
 /* Main computational kernel. The whole function will be timed,
    including the call and return. */
 template<int P>
-static 
+static
 //__attribute__((noinline))
 void kernel_heat_3d(int tsteps,
 		      int n,
@@ -1006,22 +1006,22 @@ static void benchmark_head3d_host(benchmark::State& state) {
 
 
 
-#if 0
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 1)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 2)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 2)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 3)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 4)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 5)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 6)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 7)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 8)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 16)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 32)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 64)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 128)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 256)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_host, 2)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+#if 1
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 1)->Unit(benchmark::kMillisecond);
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 2)->Unit(benchmark::kMillisecond);
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 2)->Unit(benchmark::kMillisecond);
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 3)->Unit(benchmark::kMillisecond);
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 4)->Unit(benchmark::kMillisecond);
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 5)->Unit(benchmark::kMillisecond);
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 6)->Unit(benchmark::kMillisecond);
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 7)->Unit(benchmark::kMillisecond);
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 8)->Unit(benchmark::kMillisecond);
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 16)->Unit(benchmark::kMillisecond);
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 32)->Unit(benchmark::kMillisecond);
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 64)->Unit(benchmark::kMillisecond);
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 128)->Unit(benchmark::kMillisecond);
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 256)->Unit(benchmark::kMillisecond);
+BENCHMARK_TEMPLATE(benchmark_head3d_host, 2)->Unit(benchmark::kMillisecond);
 #endif
 
 
@@ -1118,22 +1118,22 @@ static void benchmark_head3d_threads(benchmark::State& state) {
 
 
 
-#if 0
-BENCHMARK_TEMPLATE(benchmark_head3d_threads, 1)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads, 2)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads, 3)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads, 4)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads, 5)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads, 6)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads, 7)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads, 8)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads, 16)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads, 32)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads, 64)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads, 128)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads, 256)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads, 512)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads, 2)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+#if 1
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 1)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 2)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 3)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 4)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 5)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 6)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 7)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 8)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 16)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 32)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 64)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 128)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 256)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 512)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads, 2)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
 #endif
 
 
@@ -1203,7 +1203,6 @@ static void benchmark_head3d_threads_chunks(benchmark::State& state) {
   polybench_start_instruments;
 
   /* Run kernel. */
-
     for (auto _ : state) {
     /* Run kernel. */
       kernel_heat_3d_threads_chunks<P>(tsteps, n, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(B));
@@ -1226,22 +1225,22 @@ static void benchmark_head3d_threads_chunks(benchmark::State& state) {
 }
 
 
-#if 0
-BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 1)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 2)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 3)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 4)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 5)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 6)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 7)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 8)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 16)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 32)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 64)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 128)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 256)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 512)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
-BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 2)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+#if 1
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 1)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 2)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 3)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 4)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 5)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 6)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 7)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 8)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 16)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 32)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 64)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 128)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 256)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 512)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
+BENCHMARK_TEMPLATE(benchmark_head3d_threads_chunks, 2)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
 #endif
 
 
@@ -1331,8 +1330,8 @@ static void benchmark_head3d_threads_static(benchmark::State& state) {
 
 
 
-#if 0
-BENCHMARK(benchmark_head3d_threads_static)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+#if 1
+BENCHMARK(benchmark_head3d_threads_static)->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime()->UseRealTime();
 #endif
 
 
@@ -1387,15 +1386,13 @@ void kernel_heat_3d_target_inner_notile(benchmark::State& state,int tsteps,
   #pragma omp target data map(tofrom:A[0:N][0:N][0:N]) map(tofrom:B[0:N][0:N][0:N])
   for (auto _ : state) {
     kernel_heat_3d_target_notile(tsteps, n, A, B);
+    #pragma omp taskwait
     benchmark::ClobberMemory();
   }
 }
 
 
-
-
 static void benchmark_head3d_target_notile(benchmark::State& state) {
-
   /* Retrieve problem size. */
   int n = N;
   int tsteps = TSTEPS;
@@ -1486,6 +1483,7 @@ void kernel_heat_3d_target_inner(benchmark::State& state,int tsteps,
   #pragma omp target data map(tofrom:A[0:N][0:N][0:N]) map(tofrom:B[0:N][0:N][0:N])
   for (auto _ : state) {
     kernel_heat_3d_target<P>(tsteps, n, A, B);
+    #pragma omp taskwait
     benchmark::ClobberMemory();
   }
 }
@@ -1511,8 +1509,7 @@ static void benchmark_head3d_target(benchmark::State& state) {
   polybench_start_instruments;
 
   /* Run kernel. */
-kernel_heat_3d_target_inner<P>(state, tsteps, n, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(B));
-
+  kernel_heat_3d_target_inner<P>(state, tsteps, n, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(B));
 
   /* Stop and print timer. */
   polybench_stop_instruments;

@@ -271,6 +271,7 @@ void kernel_su3_target(int n,
         for (int k = 0; k < 3; ++k)
            C[i].v[j] += A[i].v[k] * B[i].v[k].v[j];
   }
+  #pragma omp taskwait
 }
 static void bench_su3_target(benchmark::State& state) {
   int n = N;
@@ -294,7 +295,7 @@ static void bench_su3_target(benchmark::State& state) {
   free(A);
   free(B);
 }
-BENCHMARK(bench_su3_target)->Unit(benchmark::kMicrosecond);
+BENCHMARK(bench_su3_target)->Unit(benchmark::kMicrosecond)->UseRealTime();
 
 
 static
@@ -310,6 +311,7 @@ void kernel_su3_target_inner(int n,
         for (int k = 0; k < 3; ++k)
            C[i].v[j] += A[i].v[k] * B[i].v[k].v[j];
   }
+  #pragma omp taskwait
 }
 static void bench_su3_target_inner(benchmark::State& state) {
   int n = N;
@@ -333,7 +335,7 @@ static void bench_su3_target_inner(benchmark::State& state) {
   free(A);
   free(B);
 }
-BENCHMARK(bench_su3_target_inner)->Unit(benchmark::kMicrosecond);
+BENCHMARK(bench_su3_target_inner)->Unit(benchmark::kMicrosecond)->UseRealTime();
 
 
 
@@ -351,6 +353,7 @@ void kernel_su3_target_outer(int n,
         for (int k = 0; k < 3; ++k)
            C[i].v[j] += A[i].v[k] * B[i].v[k].v[j];
   }
+  #pragma omp taskwait
 }
 static void bench_su3_target_outer(benchmark::State& state) {
   int n = N;
@@ -374,7 +377,7 @@ static void bench_su3_target_outer(benchmark::State& state) {
   free(A);
   free(B);
 }
-BENCHMARK(bench_su3_target_outer)->Unit(benchmark::kMicrosecond);
+BENCHMARK(bench_su3_target_outer)->Unit(benchmark::kMicrosecond)->UseRealTime();
 
 
 
@@ -396,6 +399,7 @@ void kernel_su3_target_full(int n,
         for (int k = 0; k < 3; ++k)
            C[i].v[j] += A[i].v[k] * B[i].v[k].v[j];
   }
+  #pragma omp taskwait
 }
 static void bench_su3_target_full(benchmark::State& state) {
   int n = N;
@@ -419,4 +423,4 @@ static void bench_su3_target_full(benchmark::State& state) {
   free(A);
   free(B);
 }
-BENCHMARK(bench_su3_target_full)->Unit(benchmark::kMicrosecond);
+BENCHMARK(bench_su3_target_full)->Unit(benchmark::kMicrosecond)->UseRealTime();

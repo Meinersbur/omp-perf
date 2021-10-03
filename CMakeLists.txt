@@ -9,9 +9,9 @@ set(GAMESS_REPETITIONS "20" CACHE STRING "Number of test repetitions")
 ## Dependencies ################################################################
 
 find_package(Threads REQUIRED)
-if (OMP_VERSION)
-    find_package(OpenMP REQUIRED)
-endif ()
+find_package(CUDAToolkit REQUIRED)
+find_package(OpenMP REQUIRED)
+
 
 include(FetchContent)
 set(BENCHMARK_ENABLE_TESTING OFF)
@@ -19,6 +19,26 @@ FetchContent_Declare(googlebenchmark
     GIT_REPOSITORY https://github.com/google/benchmark.git
 )
 FetchContent_MakeAvailable(googlebenchmark)
+
+
+#############################################################################
+
+message("CUDA_ROOT: ${CUDA_ROOT}")
+message("CUDAToolkit_LIBRARY_DIR: ${CUDAToolkit_LIBRARY_DIR}")
+message("CUDAToolkit_LIBRARY_ROOT: ${CUDAToolkit_LIBRARY_ROOT}")
+
+set(OFFLOAD_OPTIONS ${OpenMP_CXX_FLAGS} -fno-exceptions -march=native --cuda-path=${CUDA_ROOT} -fopenmp=libomp -fopenmp-version=51  -fopenmp-targets=nvptx64
+"--libomptarget-nvptx-bc-path=/home/mkruse/build/llvm-project/release/projects/openmp/libomptarget" -Wall
+"-Wl,-rpath,${CUDAToolkit_LIBRARY_DIR}"
+)
+
+set(OFFLOAD_CC_OPTIONS ${OFFLOAD_OPTIONS}
+)
+
+set(OFFLOAD_LD_OPTIONS ${OFFLOAD_OPTIONS}
+"-Wl,-rpath,/home/mkruse/build/llvm-project/release/lib" 
+"-Wl,-rpath,/home/mkruse/build/llvm-project/release/projects/openmp/libomptarget" "-Wl,-rpath,/home/mkruse/build/llvm-project/release/lib"  
+)
 
 
 ## Build #######################################################################
@@ -31,8 +51,9 @@ add_subdirectory(su3)
 ## Run #########################################################################
 
 set(GBENCH_ARGS)
+list(APPEND GBENCH_ARGS --benchmark_min_time=10)
 #if (GAMESS_REPETITIONS GREATER 1)
-#    list(APPEND GBENCH_ARGS --benchmark_repetitions=${GAMESS_REPETITIONS} --benchmark_display_aggregates_only=true  --benchmark_min_time=20)
+#    list(APPEND GBENCH_ARGS --benchmark_repetitions=${GAMESS_REPETITIONS} --benchmark_display_aggregates_only=true --benchmark_min_time=3)
 #endif ()
 
 
@@ -40,8 +61,8 @@ set(GBENCH_ARGS)
 add_custom_target(run
     DEPENDS heat-3d atax-host-unroll
     #COMMAND $<TARGET_FILE:atax-host-unroll> ${GBENCH_ARGS}
-    #COMMAND $<TARGET_FILE:heat-3d> ${GBENCH_ARGS}
-    COMMAND $<TARGET_FILE:su3> ${GBENCH_ARGS}
+    COMMAND $<TARGET_FILE:heat-3d> ${GBENCH_ARGS}
+    #COMMAND $<TARGET_FILE:su3> ${GBENCH_ARGS}
     USES_TERMINAL
     COMMENT "Run benchmark ..."
     VERBATIM
