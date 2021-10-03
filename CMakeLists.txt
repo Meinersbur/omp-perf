@@ -28,7 +28,7 @@ message("CUDAToolkit_LIBRARY_DIR: ${CUDAToolkit_LIBRARY_DIR}")
 message("CUDAToolkit_LIBRARY_ROOT: ${CUDAToolkit_LIBRARY_ROOT}")
 
 set(OFFLOAD_OPTIONS ${OpenMP_CXX_FLAGS} -fno-exceptions -march=native --cuda-path=${CUDA_ROOT} -fopenmp=libomp -fopenmp-version=51  -fopenmp-targets=nvptx64
-"--libomptarget-nvptx-bc-path=/home/mkruse/build/llvm-project/release/projects/openmp/libomptarget" -Wall
+"--libomptarget-nvptx-bc-path=/home/meinersbur/build/llvm-project/release/projects/openmp/libomptarget" -Wall
 "-Wl,-rpath,${CUDAToolkit_LIBRARY_DIR}"
 )
 
@@ -36,8 +36,8 @@ set(OFFLOAD_CC_OPTIONS ${OFFLOAD_OPTIONS}
 )
 
 set(OFFLOAD_LD_OPTIONS ${OFFLOAD_OPTIONS}
-"-Wl,-rpath,/home/mkruse/build/llvm-project/release/lib" 
-"-Wl,-rpath,/home/mkruse/build/llvm-project/release/projects/openmp/libomptarget" "-Wl,-rpath,/home/mkruse/build/llvm-project/release/lib"  
+"-Wl,-rpath,/home/meinersbur/build/llvm-project/release/lib" 
+"-Wl,-rpath,/home/meinersbur/build/llvm-project/release/projects/openmp/libomptarget" "-Wl,-rpath,/home/meinersbur/build/llvm-project/release/lib"  
 )
 
 
@@ -60,8 +60,8 @@ list(APPEND GBENCH_ARGS --benchmark_min_time=10)
 
 add_custom_target(run
     DEPENDS heat-3d atax-host-unroll
-    #COMMAND $<TARGET_FILE:atax-host-unroll> ${GBENCH_ARGS}
-    COMMAND $<TARGET_FILE:heat-3d> ${GBENCH_ARGS}
+    COMMAND $<TARGET_FILE:atax-host-unroll> ${GBENCH_ARGS}
+    #COMMAND $<TARGET_FILE:heat-3d> ${GBENCH_ARGS}
     #COMMAND $<TARGET_FILE:su3> ${GBENCH_ARGS}
     USES_TERMINAL
     COMMENT "Run benchmark ..."
