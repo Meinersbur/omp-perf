@@ -1,4 +1,6 @@
 #include <benchmark/benchmark.h>
+//#define DATA_TYPE_IS_FLOAT 1
+#define DATA_TYPE_IS_INT 1
 
 /* atax.c: this file is part of PolyBench/C */
 
@@ -293,11 +295,12 @@ extern void polybench_prepare_instruments();
 #ifdef DATA_TYPE_IS_INT
 #  define DATA_TYPE int
 #  define DATA_PRINTF_MODIFIER "%d "
+#  define SCALAR_VAL(x) ((int)x)
 #endif
 
-#if defined(DATA_TYPE_IS_INT) && !defined(INTEGER_SUPPORT)
-#  error "Integer data type not supported for this benchmark."
-#endif
+//#if defined(DATA_TYPE_IS_INT) && !defined(INTEGER_SUPPORT)
+//#  error "Integer data type not supported for this benchmark."
+//#endif
 
 #ifdef DATA_TYPE_IS_FLOAT
 #  define DATA_TYPE float
@@ -924,6 +927,82 @@ void* polybench_alloc_data(unsigned long long int n, int elt_size)
 }
 
 
+
+
+
+void kernel_atax_heuristic(int m, int n,
+		 DATA_TYPE POLYBENCH_2D(A,M,N,m,n),
+		 DATA_TYPE POLYBENCH_1D(x,N,n),
+		 DATA_TYPE POLYBENCH_1D(y,N,n),
+		 DATA_TYPE POLYBENCH_1D(tmp,M,m))
+{
+  int i, j;
+
+  for (i = 0; i < _PB_N; i++)
+    y[i] = 0;
+  for (i = 0; i < _PB_M; i++) {
+    tmp[i] = SCALAR_VAL(0.0);
+
+    #pragma omp unroll
+    for (j = 0; j < _PB_N; j++)
+      tmp[i] = tmp[i] + A[i][j] * x[j];
+
+    #pragma omp unroll
+    for (j = 0; j < _PB_N; j++)
+      y[j] = y[j] + A[i][j] * tmp[i];
+  }
+}
+static void benchmark_atax_host_heuristic(benchmark::State& state) {
+  /* Retrieve problem size. */
+  int m = M;
+  int n = N;
+
+  /* Variable declaration/allocation. */
+  POLYBENCH_2D_ARRAY_DECL(A, DATA_TYPE, M, N, m, n);
+  POLYBENCH_1D_ARRAY_DECL(x, DATA_TYPE, N, n);
+  POLYBENCH_1D_ARRAY_DECL(y, DATA_TYPE, N, n);
+  POLYBENCH_1D_ARRAY_DECL(tmp, DATA_TYPE, M, m);
+
+  /* Initialize array(s). */
+  init_array (m, n, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(x));
+
+  /* Start timer. */
+  polybench_start_instruments;
+
+  for (auto _ : state) {
+  /* Run kernel. */
+  kernel_atax_heuristic(m, n,
+	       POLYBENCH_ARRAY(A),
+	       POLYBENCH_ARRAY(x),
+	       POLYBENCH_ARRAY(y),
+	       POLYBENCH_ARRAY(tmp));
+	//#pragma omp target exit data map(from:value[0:n_cd*n_ab])
+
+	benchmark::ClobberMemory();
+	//state.PauseTiming();
+  //fprintf(stderr,"### value=%f\n",value[0]);
+	//state.SetItemsProcessed(n_ab*n_cd);
+  //state.ResumeTiming();
+  }
+
+  /* Stop and print timer. */
+  polybench_stop_instruments;
+  polybench_print_instruments;
+
+  /* Be clean. */
+  POLYBENCH_FREE_ARRAY(A);
+  POLYBENCH_FREE_ARRAY(x);
+  POLYBENCH_FREE_ARRAY(y);
+  POLYBENCH_FREE_ARRAY(tmp);
+}
+BENCHMARK(benchmark_atax_host_heuristic)->Unit(benchmark::kMicrosecond);
+
+
+
+
+
+
+
 /* Main computational kernel. The whole function will be timed,
    including the call and return. */
 template<int P>
@@ -950,9 +1029,6 @@ void kernel_atax(int m, int n,
       y[j] = y[j] + A[i][j] * tmp[i];
   }
 }
-
-
-
 template <int P>
 static void benchmark_atax_host(benchmark::State& state) {
   /* Retrieve problem size. */
@@ -1001,8 +1077,9 @@ static void benchmark_atax_host(benchmark::State& state) {
 
 #if 1
 BENCHMARK_TEMPLATE(benchmark_atax_host, 1)->Unit(benchmark::kMicrosecond);
+BENCHMARK_TEMPLATE(benchmark_atax_host, 1)->Unit(benchmark::kMicrosecond);
 BENCHMARK_TEMPLATE(benchmark_atax_host, 2)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_atax_host, 3)->Unit(benchmark::kMicrosecond);
+//BENCHMARK_TEMPLATE(benchmark_atax_host, 3)->Unit(benchmark::kMicrosecond);
 BENCHMARK_TEMPLATE(benchmark_atax_host, 4)->Unit(benchmark::kMicrosecond);
 BENCHMARK_TEMPLATE(benchmark_atax_host, 8)->Unit(benchmark::kMicrosecond);
 BENCHMARK_TEMPLATE(benchmark_atax_host, 16)->Unit(benchmark::kMicrosecond);
@@ -1010,10 +1087,7 @@ BENCHMARK_TEMPLATE(benchmark_atax_host, 32)->Unit(benchmark::kMicrosecond);
 BENCHMARK_TEMPLATE(benchmark_atax_host, 64)->Unit(benchmark::kMicrosecond);
 BENCHMARK_TEMPLATE(benchmark_atax_host, 128)->Unit(benchmark::kMicrosecond);
 BENCHMARK_TEMPLATE(benchmark_atax_host, 256)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_atax_host, 1)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_atax_host, 2)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_atax_host, 3)->Unit(benchmark::kMicrosecond);
-BENCHMARK_TEMPLATE(benchmark_atax_host, 4)->Unit(benchmark::kMicrosecond);
+BENCHMARK_TEMPLATE(benchmark_atax_host, 512)->Unit(benchmark::kMicrosecond);
 #endif
 
 

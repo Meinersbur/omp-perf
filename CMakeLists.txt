@@ -61,8 +61,8 @@ list(APPEND GBENCH_ARGS --benchmark_min_time=10)
 add_custom_target(run
     DEPENDS heat-3d atax-host-unroll
     #COMMAND $<TARGET_FILE:atax-host-unroll> ${GBENCH_ARGS}
-    COMMAND $<TARGET_FILE:heat-3d> ${GBENCH_ARGS}
-    #COMMAND $<TARGET_FILE:su3> ${GBENCH_ARGS}
+    #COMMAND $<TARGET_FILE:heat-3d> ${GBENCH_ARGS}
+    COMMAND $<TARGET_FILE:su3> ${GBENCH_ARGS}
     #COMMAND $<TARGET_FILE:chunksize> ${GBENCH_ARGS}
     USES_TERMINAL
     COMMENT "Run benchmark ..."

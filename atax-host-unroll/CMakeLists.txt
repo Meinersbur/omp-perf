@@ -6,6 +6,7 @@ target_compile_options(atax-host-unroll PRIVATE ${OFFLOAD_CC_OPTIONS}
     -save-temps
     -fno-unroll-loops -Rpass=loop-unroll -Rpass-missed=loop-unroll -Rpass-analysis=loop-unroll
     -fno-vectorize  # -Rpass=loop-vectorize -Rpass-missed=loop-vectorize -Rpass-analysis=loop-vectorize)
+     "SHELL:-mllvm -interleave-loops=0"
 )
 target_link_options(atax-host-unroll PRIVATE ${OFFLOAD_LD_OPTIONS})
 
