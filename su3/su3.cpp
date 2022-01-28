@@ -158,21 +158,25 @@ void kernel_su3_host_outer(int n,
     su3_matrix B[N])
 {
   for (int i = 0; i < n; ++i) {
-#if 1
+#if 0
+      #pragma omp unroll full
       for (int j = 0; j < 3; ++j)
-        #pragma omp unroll full
         for (int k = 0; k < 3; ++k)
            C[i].v[j] += A[i].v[k] * B[i].v[k].v[j];
 #else
+       // Manually unrolled j-loop in case clang does not support outer loop unrolling
         for (int k = 0; k < 3; ++k) 
            C[i].v[0] += A[i].v[k] * B[i].v[k].v[0];
-             for (int k = 0; k < 3; ++k)
+        for (int k = 0; k < 3; ++k)
            C[i].v[1] += A[i].v[k] * B[i].v[k].v[1];
-                   for (int k = 0; k < 3; ++k) 
+        for (int k = 0; k < 3; ++k) 
            C[i].v[2] += A[i].v[k] * B[i].v[k].v[2];
 #endif
   }
 }
+
+
+
 
 static void bench_su3_host_outer(benchmark::State& state) {
   int n = N;
@@ -200,8 +204,6 @@ BENCHMARK(bench_su3_host_outer)->Unit(benchmark::kMicrosecond);
 
 
 
-
-
 static
 void kernel_su3_host_full(int n,
     su3_vector C[N],
@@ -210,23 +212,22 @@ void kernel_su3_host_full(int n,
 {
 
   for (int i = 0; i < n; ++i) {
-            #if 1
-          #pragma omp unroll full
+      #pragma omp unroll full
       for (int j = 0; j < 3; ++j) {
-                #pragma omp unroll full
-              for (int k = 0; k < 3; ++k)
-                C[i].v[j] += A[i].v[k] * B[i].v[k].v[j];
-        #else
-       // #pragma omp unroll full
-       // for (int k = 0; k < 3; ++k)
+#if 0
+        #pragma omp unroll full
+        for (int k = 0; k < 3; ++k)
+          C[i].v[j] += A[i].v[k] * B[i].v[k].v[j];
+#else
+           // manual unroll
            C[i].v[j] += A[i].v[0] * B[i].v[0].v[j];
-            C[i].v[j] += A[i].v[1] * B[i].v[1].v[j];
-             C[i].v[j] += A[i].v[2] * B[i].v[2].v[j];
-            #endif
+           C[i].v[j] += A[i].v[1] * B[i].v[1].v[j];
+           C[i].v[j] += A[i].v[2] * B[i].v[2].v[j];
+#endif
       }
   }
-
 }
+
 
 
 static void bench_su3_host_full(benchmark::State& state) {
